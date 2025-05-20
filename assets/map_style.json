@@ -1,0 +1,56 @@
+[
+    {
+      "featureType": "all",
+      "elementType": "labels",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
+    {
+      "featureType": "all",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "visibility": "simplified"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "all",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.hospital",
+      "elementType": "all",
+      "stylers": [
+        {
+          "visibility": "on"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "all",
+      "stylers": [
+        {
+          "visibility": "simplified"
+        }
+      ]
+    },
+    {
+      "featureType": "transit",
+      "elementType": "all",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    }
+  ]
