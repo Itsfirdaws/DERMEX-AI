@@ -36,13 +36,11 @@ class _AddUsersState extends State<AddUsers> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. إنشاء المستخدم في Firebase Authentication
       final credential = await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // 2. حفظ بيانات المستخدم في Realtime Database
       final userData = {
         'name': _nameController.text.trim(),
         'email': _emailController.text.trim(),
@@ -53,27 +51,24 @@ class _AddUsersState extends State<AddUsers> {
 
       await _database.child('users/${credential.user!.uid}').set(userData);
 
-      // 3. إذا كان المستخدم مديراً، نضيفه إلى مجموعة المديرين
       if (_isAdmin) {
         await _database.child('admins/${credential.user!.uid}').set(true);
       }
 
-      // عرض رسالة نجاح
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم إضافة المستخدم بنجاح!')),
+        const SnackBar(content: Text('User added successfully!')),
       );
 
-      // العودة إلى الشاشة السابقة
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       if (e.code == 'weak-password') {
-        errorMessage = 'كلمة المرور ضعيفة جداً';
+        errorMessage = 'The password is too weak';
       } else if (e.code == 'email-already-in-use') {
-        errorMessage = 'هذا البريد الإلكتروني مستخدم بالفعل';
+        errorMessage = 'This email is already in use';
       } else {
-        errorMessage = 'خطأ في إنشاء المستخدم: ${e.message}';
+        errorMessage = 'Error creating user: ${e.message}';
       }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +77,7 @@ class _AddUsersState extends State<AddUsers> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('حدث خطأ غير متوقع')),
+        const SnackBar(content: Text('An unexpected error occurred')),
       );
     } finally {
       if (mounted) {
@@ -103,7 +98,7 @@ class _AddUsersState extends State<AddUsers> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'إضافة مستخدم جديد',
+          'Add New User',
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -121,7 +116,7 @@ class _AddUsersState extends State<AddUsers> {
                     controller: _nameController,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'الاسم الكامل',
+                      labelText: 'Full Name',
                       labelStyle: const TextStyle(color: Colors.white70),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: AppColors.border),
@@ -134,7 +129,7 @@ class _AddUsersState extends State<AddUsers> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'الرجاء إدخال الاسم';
+                        return 'Please enter the name';
                       }
                       return null;
                     },
@@ -145,7 +140,7 @@ class _AddUsersState extends State<AddUsers> {
                     keyboardType: TextInputType.emailAddress,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'البريد الإلكتروني',
+                      labelText: 'Email',
                       labelStyle: const TextStyle(color: Colors.white70),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: AppColors.border),
@@ -158,10 +153,10 @@ class _AddUsersState extends State<AddUsers> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'الرجاء إدخال البريد الإلكتروني';
+                        return 'Please enter the email';
                       }
                       if (!value.contains('@')) {
-                        return 'الرجاء إدخال بريد إلكتروني صحيح';
+                        return 'Please enter a valid email';
                       }
                       return null;
                     },
@@ -172,7 +167,7 @@ class _AddUsersState extends State<AddUsers> {
                     keyboardType: TextInputType.phone,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'رقم الهاتف',
+                      labelText: 'Phone Number',
                       labelStyle: const TextStyle(color: Colors.white70),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: AppColors.border),
@@ -185,7 +180,7 @@ class _AddUsersState extends State<AddUsers> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'الرجاء إدخال رقم الهاتف';
+                        return 'Please enter the phone number';
                       }
                       return null;
                     },
@@ -196,7 +191,7 @@ class _AddUsersState extends State<AddUsers> {
                     obscureText: true,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'كلمة المرور',
+                      labelText: 'Password',
                       labelStyle: const TextStyle(color: Colors.white70),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: AppColors.border),
@@ -209,10 +204,10 @@ class _AddUsersState extends State<AddUsers> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'الرجاء إدخال كلمة المرور';
+                        return 'Please enter the password';
                       }
                       if (value.length < 6) {
-                        return 'يجب أن تكون كلمة المرور 6 أحرف على الأقل';
+                        return 'Password must be at least 6 characters';
                       }
                       return null;
                     },
@@ -220,7 +215,7 @@ class _AddUsersState extends State<AddUsers> {
                   const SizedBox(height: 20),
                   SwitchListTile(
                     title: const Text(
-                      'مستخدم مدير',
+                      'Admin User',
                       style: TextStyle(color: Colors.white),
                     ),
                     value: _isAdmin,
@@ -244,9 +239,9 @@ class _AddUsersState extends State<AddUsers> {
                     child: _isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
-                      'إضافة مستخدم',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                            'Add User',
+                            style: TextStyle(fontSize: 16),
+                          ),
                   ),
                 ],
               ),

@@ -32,7 +32,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       final scansSnapshot = await _dbRef.child('scans').once();
       final scansCount = scansSnapshot.snapshot.children.length;
 
-      // جلب اسم المدير
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
         final emailPrefix = currentUser.email?.split('@').first ?? 'Admin';
@@ -67,7 +66,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
-          'لوحة التحكم',
+          'Admin Dashboard',
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -109,7 +108,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'مرحباً, $_adminName',
+                            'Hello, $_adminName',
                             style: const TextStyle(
                               color: Color(0xFF1B9BDB),
                               fontSize: 16,
@@ -117,7 +116,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             ),
                           ),
                           const Text(
-                            'مدير النظام',
+                            'System Administrator',
                             style: TextStyle(
                               color: Color(0xFF9CA3AF),
                               fontSize: 14,
@@ -129,14 +128,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   ),
                 ),
                 _buildStatCard(
-                  title: 'إجمالي المستخدمين',
+                  title: 'Total Users',
                   value: _totalUsers.toString(),
                   percentage: '${_usersGrowth.toStringAsFixed(1)}%',
                   progress: _usersGrowth / 100,
                 ),
                 const SizedBox(height: 20),
                 _buildStatCard(
-                  title: 'إجمالي عمليات المسح',
+                  title: 'Total Scans',
                   value: _totalScans.toString(),
                   percentage: '${_scansGrowth.toStringAsFixed(1)}%',
                   progress: _scansGrowth / 100,
@@ -163,14 +162,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const UserManagementScreen()),
+                          builder: (context) => const UserManagementScreen(),
+                        ),
                       );
                     },
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'إدارة المستخدمين',
+                          'Manage Users',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -239,7 +239,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
-                  title.contains('المستخدمين')
+                  title.contains('Users')
                       ? Icons.people_outline
                       : Icons.qr_code_scanner,
                   color: const Color(0xFF60A5FA),
@@ -277,7 +277,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'آخر 30 يومًا',
+                'Last 30 days',
                 style: TextStyle(
                   color: Color(0xFF9CA3AF),
                   fontSize: 12,

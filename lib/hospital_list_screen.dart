@@ -42,13 +42,14 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
     super.dispose();
   }
 
+  // دالة للحصول على الموقع الحالي للمستخدم
   Future<void> _determinePosition() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content:
-              Text('الرجاء تفعيل خدمة الموقع', textAlign: TextAlign.center),
+          content: Text('Please enable location services',
+              textAlign: TextAlign.center),
           backgroundColor: Colors.red,
         ),
       );
@@ -62,7 +63,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('لا يمكن استخدام التطبيق بدون إذن الموقع',
+          content: Text('App cannot be used without location permission',
               textAlign: TextAlign.center),
           backgroundColor: Colors.red,
         ),
@@ -82,6 +83,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
     }
   }
 
+  // دالة لجلب المستشفيات القريبة من الموقع الحالي
   Future<void> fetchNearbyHospitals() async {
     if (_center == null) return;
 
@@ -106,18 +108,19 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
           });
         } else {
           setState(() => isLoading = false);
-          _showError('لا توجد مستشفيات قريبة');
+          _showError('No nearby hospitals found');
         }
       } else {
         setState(() => isLoading = false);
-        _showError('خطأ في الاتصال بالخادم');
+        _showError('Server connection error');
       }
     } catch (e) {
       setState(() => isLoading = false);
-      _showError('حدث خطأ غير متوقع');
+      _showError('An unexpected error occurred');
     }
   }
 
+  // دالة لإضافة علامات المستشفيات على الخريطة
   void _addHospitalMarkers() {
     _markers.clear();
     for (var hospital in hospitals) {
@@ -137,6 +140,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
     }
   }
 
+  // دالة لعرض رسائل الخطأ
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -146,6 +150,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
     );
   }
 
+  // دالة لتحريك الكاميرا إلى موقع معين
   void _moveCameraToPlace(double lat, double lng, String name) {
     final newPos = LatLng(lat, lng);
     mapController.animateCamera(CameraUpdate.newLatLngZoom(newPos, 15));
@@ -174,7 +179,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                   CircularProgressIndicator(color: primaryColor),
                   SizedBox(height: 20),
                   Text(
-                    'جاري تحميل الموقع الحالي...',
+                    'Loading current location...',
                     style: TextStyle(
                       color: primaryColor,
                       fontSize: 18,
@@ -202,7 +207,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                   buildingsEnabled: true,
                 ),
 
-                // Search Box - التصميم الجديد
+                // صندوق البحث - التصميم الجديد
                 Positioned(
                   top: 50,
                   left: 20,
@@ -216,8 +221,9 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color.fromARGB(255, 255, 255, 255).withOpacity(
-                              _searchFocusNode.hasFocus ? 0.2 : 0.1),
+                          color: const Color.fromARGB(255, 255, 255, 255)
+                              .withOpacity(
+                                  _searchFocusNode.hasFocus ? 0.2 : 0.1),
                           blurRadius: 15,
                           spreadRadius: 0,
                           offset: Offset(0, 5),
@@ -226,7 +232,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                     ),
                     child: Row(
                       children: [
-                        // Search Icon with Gradient
+                        // أيقونة البحث مع التدرج اللوني
                         Container(
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -247,7 +253,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                             googleAPIKey: apiKey,
                             focusNode: _searchFocusNode,
                             inputDecoration: InputDecoration(
-                              hintText: "ابحث عن مكان في السعودية",
+                              hintText: "Search for a place in Saudi Arabia",
                               border: InputBorder.none,
                               hintStyle: TextStyle(
                                 color: const Color.fromARGB(255, 99, 99, 99),
@@ -284,7 +290,9 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                                   Expanded(
                                     child: Text(
                                       prediction.description ?? "",
-                                      style: TextStyle(color: const Color.fromARGB(221, 255, 255, 255)),
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              221, 255, 255, 255)),
                                     ),
                                   ),
                                 ],
@@ -306,7 +314,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                   ),
                 ),
 
-                // Current Location Button
+                // زر الموقع الحالي
                 Positioned(
                   bottom: 120,
                   right: 20,
@@ -318,7 +326,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                   ),
                 ),
 
-                // Hospitals Button
+                // زر المستشفيات
                 Positioned(
                   bottom: 190,
                   right: 20,
@@ -332,7 +340,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                   ),
                 ),
 
-                // Bottom Sheet Handle
+                // مقبض الورقة المنزلقة من الأسفل
                 if (showHospitals)
                   Positioned(
                     bottom: 270,
@@ -350,7 +358,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                     ),
                   ),
 
-                // Hospitals List
+                // قائمة المستشفيات
                 AnimatedPositioned(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
@@ -376,7 +384,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                     ),
                     child: Column(
                       children: [
-                        // Draggable Handle
+                        // المقبض القابل للسحب
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Center(
@@ -391,7 +399,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                           ),
                         ),
 
-                        // Title
+                        // العنوان
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 5),
@@ -399,7 +407,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'المستشفيات القريبة',
+                                'Nearby Hospitals',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -415,7 +423,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                           ),
                         ),
 
-                        // List
+                        // القائمة
                         Expanded(
                           child: isLoading
                               ? Center(
@@ -434,7 +442,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                                           ),
                                           SizedBox(height: 20),
                                           Text(
-                                            'لا توجد مستشفيات قريبة',
+                                            'No nearby hospitals',
                                             style: TextStyle(
                                               color: Colors.grey,
                                               fontSize: 18,
@@ -444,7 +452,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                                           TextButton(
                                             onPressed: fetchNearbyHospitals,
                                             child: Text(
-                                              'إعادة المحاولة',
+                                              'Retry',
                                               style: TextStyle(
                                                   color: primaryColor),
                                             ),
@@ -498,7 +506,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                                               ),
                                               title: Text(
                                                 hospital['name'] ??
-                                                    'اسم غير معروف',
+                                                    'Unknown name',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black87,
@@ -506,7 +514,7 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                                               ),
                                               subtitle: Text(
                                                 hospital['vicinity'] ??
-                                                    'موقع غير معروف',
+                                                    'Unknown location',
                                                 style: TextStyle(
                                                     color: Colors.grey[600]),
                                               ),
@@ -541,8 +549,8 @@ class _HospitalMapScreenState extends State<GoogleMapPage> {
                                                     Text(
                                                       hospital['opening_hours']
                                                               ['open_now']
-                                                          ? 'مفتوح الآن'
-                                                          : 'مغلق الآن',
+                                                          ? 'Open now'
+                                                          : 'Closed now',
                                                       style: TextStyle(
                                                         color: hospital[
                                                                     'opening_hours']

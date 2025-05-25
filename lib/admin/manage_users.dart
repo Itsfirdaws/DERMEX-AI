@@ -15,23 +15,18 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  // دالة لحذف المستخدم
+  // Function to delete user
   Future<void> deleteUser(String userId) async {
     try {
-      // حذف المستخدم من Firebase
       await _usersRef.child(userId).remove();
-
-      // تحديث الواجهة بعد الحذف
-      setState(() {
-        // يمكن أن تترك هذا فارغًا إذا لم يكن هناك تحديث للبيانات في الواجهة
-      });
+      setState(() {});
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حذف المستخدم بنجاح')),
+        const SnackBar(content: Text('User deleted successfully')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('فشل في حذف المستخدم')),
+        const SnackBar(content: Text('Failed to delete user')),
       );
     }
   }
@@ -55,7 +50,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                   ),
                   const SizedBox(width: 16),
                   const Text(
-                    'إدارة المستخدمين',
+                    'User Management',
                     style: AppTextStyles.headerTitle,
                   ),
                 ],
@@ -92,7 +87,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                               },
                               style: AppTextStyles.searchText,
                               decoration: const InputDecoration(
-                                hintText: 'ابحث...',
+                                hintText: 'Search...',
                                 hintStyle: AppTextStyles.searchText,
                                 border: InputBorder.none,
                                 isDense: true,
@@ -126,7 +121,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                             Icon(Icons.add, color: Colors.white),
                             SizedBox(width: 8),
                             Text(
-                              'إضافة مستخدم جديد',
+                              'Add New User',
                               style: AppTextStyles.addUserText,
                             ),
                           ],
@@ -147,14 +142,13 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                               snapshot.child('email').value.toString();
                           final userName =
                               snapshot.child('name').value?.toString() ??
-                                  'بدون اسم';
+                                  'No Name';
                           final userPhone =
                               snapshot.child('phone').value?.toString() ??
-                                  'بدون هاتف';
+                                  'No Phone';
                           final isAdmin =
                               snapshot.child('isAdmin').value as bool? ?? false;
 
-                          // البحث في جميع الحقول
                           if (_searchQuery.isNotEmpty &&
                               !userEmail.toLowerCase().contains(_searchQuery) &&
                               !userName.toLowerCase().contains(_searchQuery) &&
@@ -216,19 +210,18 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: const Text(
-                                      'مدير',
+                                      'Admin',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 12,
                                       ),
                                     ),
                                   ),
-                                // زر الحذف
                                 IconButton(
                                   icon: const Icon(Icons.delete,
                                       color: Colors.red),
                                   onPressed: () {
-                                    deleteUser(userId); // استدعاء دالة الحذف
+                                    deleteUser(userId);
                                   },
                                 ),
                               ],

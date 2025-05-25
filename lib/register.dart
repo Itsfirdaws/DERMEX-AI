@@ -58,7 +58,7 @@ class _RegisterState extends State<Register> {
       // 3. Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('تم التسجيل بنجاح!'),
+          content: Text('Registration successful!'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -72,15 +72,15 @@ class _RegisterState extends State<Register> {
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred';
       if (e.code == 'weak-password') {
-        errorMessage = 'كلمة المرور ضعيفة جداً';
+        errorMessage = 'The password is too weak';
       } else if (e.code == 'email-already-in-use') {
-        errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
+        errorMessage = 'The email is already in use';
       } else if (e.code == 'invalid-email') {
-        errorMessage = 'بريد إلكتروني غير صالح';
+        errorMessage = 'Invalid email address';
       }
       _showErrorDialog(errorMessage);
     } catch (e) {
-      _showErrorDialog('حدث خطأ غير متوقع');
+      _showErrorDialog('An unexpected error occurred');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -92,12 +92,12 @@ class _RegisterState extends State<Register> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('خطأ'),
+        title: const Text('Error'),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('حسناً'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -199,7 +199,7 @@ class _RegisterState extends State<Register> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('لديك حساب بالفعل؟'),
+        const Text('Already have an account?'),
         TextButton(
           onPressed: () {
             Navigator.pushReplacement(
@@ -208,7 +208,7 @@ class _RegisterState extends State<Register> {
             );
           },
           child: const Text(
-            'سجل الدخول',
+            'Login',
             style: TextStyle(
               color: Color(0xFF1877F2),
             ),
@@ -239,19 +239,19 @@ class _RegisterState extends State<Register> {
                       child: Column(
                         children: [
                           _buildInputField(
-                            label: 'الاسم',
-                            placeholder: 'أدخل اسمك',
+                            label: 'Name',
+                            placeholder: 'Enter your name',
                             controller: _nameController,
                           ),
                           _buildInputField(
-                            label: 'البريد الإلكتروني',
-                            placeholder: 'أدخل بريدك الإلكتروني',
+                            label: 'Email',
+                            placeholder: 'Enter your email',
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                           ),
                           _buildInputField(
-                            label: 'كلمة المرور',
-                            placeholder: 'أدخل كلمة المرور',
+                            label: 'Password',
+                            placeholder: 'Enter your password',
                             controller: _passwordController,
                             isPassword: true,
                             onToggleVisibility: () {
